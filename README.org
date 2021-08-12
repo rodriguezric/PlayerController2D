@@ -1,0 +1,70 @@
+* PlayerController2D
+** Synopsis
+   This class extends a =KinematicBody2D= for creating a controllable
+   2D player. It maps  =ui_*= inputs from Godot to apply physics on
+   the =KinematicBody2D=.
+
+   This is the current input map:
+   * =ui_left= for moving left
+   * =ui_right= for moving right
+   * =ui_accept= for jumping
+** Usage
+   Clone this repository into your project and use this class as if it
+   were a =KinematicBody2D=. It is globally available under the name =PlayerController2D=.
+** Physics
+   All motion for the =KinematicBody2D= is handled with the =move_and_slide=
+   function. The data is stored in the =motion= property. The =motion= property
+   is modified the following:
+   * Inputs
+   * Friction
+   * Gravity
+
+
+   Each of these are handled in their own separate function with a =_= prefix
+   to indicate that this functions are not meant to be called outside of the
+   class.
+** Properties
+*** motion : =Vector2=
+    This is used with =move_and_slide= to move the player. 
+*** speed : =int=
+    This represents how fast the player moved horizontally and vertically. It
+    is modified by =move_mod= and =jump_mod=, respectively, to compute =motion.x=
+    and =motion.y=.
+*** move_mod : =int=
+    The speed modifier for horizontal movement.
+*** jump_mod : =int=
+    The speed modifier for vertical movement.
+*** gravity : =int=
+    The value added to =motion.y= when the player is not on a floor.
+*** friction : =float=
+    The factor for slowing down horizontal movement when horizontal inputs
+    (=ui_left=, =ui_right=) aren't pressed.
+** Methods
+*** _inputs()
+    Checks for =ui_left=, =ui_right=, or =ui_accept= for performing movement
+    and jumps.
+
+    Horizontal movement is handled with the following formula:
+    #+begin_src python
+      # Positive for right, negative for left
+      motion.x = speed * move_mod
+    #+end_src
+
+    Jumps are handled with the following formula:
+    #+begin_src python
+      # We only jump if we are on the floor.
+      # This is negative because Godot treats negative y as up
+      if is_on_floor():
+          motion.y = -speed * jump_mod
+    #+end_src
+*** _motion()
+    This method updates =motion= with =move_and_slide= using =Vector2.UP= to represent
+    up.
+*** _friction()
+    Linearly interpolates =motion.x= to 0 based on =friction=.
+*** _gravity()
+    Adds gravity to =motion.y= to create speed pointing down. If the player is on
+    the ground, =motion.y= is capped to 5 to give a constant connection to the
+    floor and prevent a ramping effect from the addition. If the player is in the air
+    =motion.y= is capped to =speed * jump_mod=.
+
