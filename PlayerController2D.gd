@@ -1,7 +1,7 @@
 class_name PlayerController2D
 extends KinematicBody2D
 
-'''
+"""
 PlayerController2D
 This class extends a KinematicBody2D for creating a controllable
 2D player. It maps some default "ui" inputs from Godot to apply
@@ -11,7 +11,7 @@ This is the current input map:
     * ui_left for moving left
     * ui_right for moving right
     * ui_accept for jumping
-'''
+"""
 
 var motion : Vector2
 
